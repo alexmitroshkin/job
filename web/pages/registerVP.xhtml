@@ -10,11 +10,18 @@
     <h:body>
         <h:form id="form">
             <p:messages id="messages" showDetail="true" closable="true" autoUpdate="true" />
+            <div id="messagesVP" style="display:none;">
+                <p:outputLabel value="#{registerVPController.errorFile}" />
+            </div> 
             <p:dataTable id="checkboxDT" var="vp" value="#{registerVPController.vps}" selection="#{registerVPController.selectedVPs}" rowKey="#{vp.pkVP}" style="margin-bottom:0">
                 <f:facet name="header">
-                    <p:commandButton value="JPG" ajax="false" actionListener="#{registerVPController.error}" >
+                    
+                    <p:commandButton id="exportJPG" value="JPG" ajax="false" onclick="PrimeFaces.monitorDownload(null, stop)" >
                         <p:fileDownload value="#{registerVPController.resultFile}" />
                     </p:commandButton>
+                    
+                    <p:remoteCommand name="stop" update="form:messages" actionListener="#{registerVPController.error()}" onsuccess="#{registerVPController.error()}"/>
+                    
                     <p:commandButton action="#{registerVPController.formedVPforSelected}" value="Форм ВП"/>
                     <p:commandButton actionListener="#{registerVPController.deleteSelectedVPs}" value="Удалить ВП" ajax="false" update=":form:msgs"/>
                 </f:facet>
@@ -31,5 +38,16 @@
             </p:dataTable>
         </h:form>
     </h:body>
+    
+    <script type="text/javascript">
+        function openError(id){
+            display = document.getElementById(id).style.display;
+            if (display === 'none'){
+                document.getElementById(id).style.display='block';
+            } else {
+                document.getElementById(id).style.display='none';
+            }
+        }
+    </script>
 </html>
 

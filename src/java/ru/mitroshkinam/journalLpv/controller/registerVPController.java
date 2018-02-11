@@ -22,6 +22,16 @@ public class registerVPController implements Serializable{
     private StreamedContent resultFile;
     private InputStream stream;
     
+    private String errorFile = "Test";
+
+    public String getErrorFile() {
+        return errorFile;
+    }
+
+    public void setErrorFile(String errorFile) {
+        this.errorFile = errorFile;
+    }
+    
     List<VP> vps;
     List<VP> selectedVPs;
 
@@ -61,17 +71,13 @@ public class registerVPController implements Serializable{
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
     
-    public StreamedContent getResultFile(){        
-        return new DefaultStreamedContent(stream, "image/jpg", "downloaded_optimus.jpg");
+    public StreamedContent getResultFile(){ 
+        stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/screen.jpg");
+        return new DefaultStreamedContent(stream, "image/jpg", "screen.jpg");
     }
     
     public void error() {
-        stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/screen.jpg");
-        if (stream != null){
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Contact admin."));
-            throw new AbortProcessingException();
-        }
-        
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Contact admin."));
     }
     
     private List<VP> search(){
