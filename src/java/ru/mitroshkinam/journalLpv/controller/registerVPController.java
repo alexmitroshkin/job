@@ -7,7 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
+import org.apache.log4j.Logger;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import ru.mitroshkinam.journalLpv.model.VP;
@@ -18,6 +18,8 @@ import ru.mitroshkinam.journalLpv.service.Service;
 public class registerVPController implements Serializable{
 
     private static final long serialVersionUID = -7718501786681573875L;
+    
+    private static final Logger log = Logger.getLogger(registerVPController.class);
     
     private StreamedContent resultFile;
     private InputStream stream;
@@ -72,11 +74,13 @@ public class registerVPController implements Serializable{
     }
     
     public StreamedContent getResultFile(){ 
+        log.info("download file: registerVPController.getResultFile()");        
         stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/screen.jpg");
         return new DefaultStreamedContent(stream, "image/jpg", "screen.jpg");
     }
     
     public void error() {
+        log.error("Ошибка");
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Contact admin."));
     }
     
