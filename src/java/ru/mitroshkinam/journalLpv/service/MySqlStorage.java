@@ -1,18 +1,19 @@
 package ru.mitroshkinam.journalLpv.service;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public class MySqlStorage {
     private Connection connection;
-    @Resource(lookup = "java:/comp/env/jdbc/journallpv")
-//    @Resource(name = "jdbc/journallpv")
-    private DataSource dataSource;
+    @Resource(mappedName = "jdbc/journallpv")
+    private DataSource journallpv;
 
     public MySqlStorage() {
         try {
@@ -28,6 +29,14 @@ public class MySqlStorage {
             
 //            dataSource.setServerName("jdbc:mysql://localhost:3306/journallpv");
             this.connection = dataSource.getConnection();
+            
+            try {
+                InitialContext ctx = new InitialContext();
+                DataSource Source = (DataSource) ctx.lookup("jdbc/journallpv");
+                this.connection = Source.getConnection();
+            } catch (NamingException ex) {
+                Logger.getLogger(MySqlStorage.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(MySqlStorage.class.getName()).log(Level.SEVERE, null, ex);
         }
